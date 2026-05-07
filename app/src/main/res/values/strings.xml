@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Sante Price Index</string>
+    <string name="price_watch">Price Watch</string>
+    <string name="profit_calc">Profit Calc</string>
+    <string name="price_board">Price Board</string>
+    <string name="trends">Trends</string>
+    <string name="default_web_client_id">1055944993851-dummy.apps.googleusercontent.com</string>
+</resources>

@@ -1,0 +1,67 @@
+{
+  "mandi_prices": {
+    "onion": {
+      "name": "Onion",
+      "name_hi": "प्याज",
+      "emoji": "🧅",
+      "price_per_kg": 22.50,
+      "unit": "kg",
+      "updated_at": "2026-05-02",
+      "history_7d": [19.0, 20.5, 21.0, 20.0, 22.0, 22.5, 22.5]
+    },
+    "tomato": {
+      "name": "Tomato",
+      "name_hi": "टमाटर",
+      "emoji": "🍅",
+      "price_per_kg": 18.00,
+      "unit": "kg",
+      "updated_at": "2026-05-02",
+      "history_7d": [24.0, 22.0, 20.0, 19.5, 18.5, 18.0, 18.0]
+    },
+    "potato": {
+      "name": "Potato",
+      "name_hi": "आलू",
+      "emoji": "🥔",
+      "price_per_kg": 15.00,
+      "unit": "kg",
+      "updated_at": "2026-05-02",
+      "history_7d": [14.0, 14.5, 15.0, 15.0, 14.5, 15.0, 15.0]
+    },
+    "garlic": {
+      "name": "Garlic",
+      "name_hi": "लहसुन",
+      "emoji": "🧄",
+      "price_per_kg": 80.00,
+      "unit": "kg",
+      "updated_at": "2026-05-02",
+      "history_7d": [70.0, 73.0, 75.0, 77.0, 79.0, 80.0, 80.0]
+    },
+    "ginger": {
+      "name": "Ginger",
+      "name_hi": "अदरक",
+      "emoji": "🫚",
+      "price_per_kg": 55.00,
+      "unit": "kg",
+      "updated_at": "2026-05-02",
+      "history_7d": [60.0, 58.0, 57.0, 56.0, 55.0, 55.0, 55.0]
+    },
+    "green_chilli": {
+      "name": "Green Chilli",
+      "name_hi": "हरी मिर्च",
+      "emoji": "🌶️",
+      "price_per_kg": 40.00,
+      "unit": "kg",
+      "updated_at": "2026-05-02",
+      "history_7d": [35.0, 37.0, 38.0, 39.0, 40.0, 40.0, 40.0]
+    },
+    "coriander": {
+      "name": "Coriander",
+      "name_hi": "धनिया",
+      "emoji": "🌿",
+      "price_per_kg": 30.00,
+      "unit": "kg",
+      "updated_at": "2026-05-02",
+      "history_7d": [28.0, 29.0, 30.0, 30.0, 30.0, 30.0, 30.0]
+    }
+  }
+}
