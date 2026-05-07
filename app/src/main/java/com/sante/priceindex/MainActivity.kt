@@ -139,7 +139,7 @@ fun MainScaffold() {
     
     val bottomNavController = rememberNavController()
 
-    val aiRepository = remember { AiRepository(apiKey = "AIzaSyDrB-7RK2HgW9cRLryT2_6EhiZjWKGxDcA") }
+    val aiRepository = remember { AiRepository(apiKey = "YOUR_API_KEY_HERE") }
     val aiViewModel: AiViewModel = viewModel(factory = AiViewModelFactory(aiRepository))
 
     LaunchedEffect(Unit) {

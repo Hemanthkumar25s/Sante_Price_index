@@ -4,5 +4,5 @@
     <string name="profit_calc">Profit Calc</string>
     <string name="price_board">Price Board</string>
     <string name="trends">Trends</string>
-    <string name="default_web_client_id">1055944993851-dummy.apps.googleusercontent.com</string>
+    <string name="default_web_client_id">YOUR_WEB_CLIENT_ID_HERE.apps.googleusercontent.com</string>
 </resources>
