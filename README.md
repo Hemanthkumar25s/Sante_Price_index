@@ -33,7 +33,7 @@ Sante Price Index is a comprehensive intelligence tool designed for fresh-market
 *   **Architecture**: MVVM (Model-View-ViewModel)
 *   **Authentication**: Firebase Auth (including Google Sign-In)
 *   **Database**: Firebase Realtime Database
-*   **AI Engine**: Gemini AI (via Google Generative AI SDK)
+*   **AI Engine**: Custom Local Intelligence (Multi-language support)
 *   **Navigation**: Jetpack Compose Navigation
 *   **Local Storage**: DataStore Preferences
 
@@ -41,16 +41,15 @@ Sante Price Index is a comprehensive intelligence tool designed for fresh-market
 
 1.  **Clone the repository**:
     ```bash
-    git clone https://github.com/Hemanthkumar25s/Santepathe_price_index.git
+    git clone https://github.com/Hemanthkumar25s/Sante_Price_index.git
     ```
 2.  **Firebase Configuration**:
     *   Add your `google-services.json` to the `app/` directory.
     *   Enable Email/Password and Google Sign-In in the Firebase Console.
-3.  **API Keys**:
-    *   Add your Gemini AI API key in the appropriate configuration file.
-    *   Update the `default_web_client_id` in `res/values/strings.xml` for Google Sign-In.
+3.  **Google Sign-In**:
+    *   Update the `default_web_client_id` in `res/values/strings.xml` with your Web Client ID from the Firebase Console.
 4.  **Build and Run**:
-    *   Open the project in Android Studio (Ladybug or newer).
+    *   Open the project in Android Studio.
     *   Sync Gradle and run the `:app` module.
 
 ## 🤝 Contribution

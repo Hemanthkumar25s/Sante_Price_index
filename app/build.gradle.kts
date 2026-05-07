@@ -85,9 +85,6 @@ dependencies {
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 
-    // Gemini AI
-    implementation("com.google.ai.client.generativeai:generativeai:0.7.0")
-
     // Image Loading
     implementation("io.coil-kt:coil-compose:2.6.0")
 
