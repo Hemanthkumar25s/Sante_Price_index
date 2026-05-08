@@ -86,7 +86,8 @@ fun LoginScreen(
     authState: AuthState,
     onLogin: (String, String) -> Unit,
     onGoogleLogin: (com.google.firebase.auth.AuthCredential) -> Unit,
-    onClearError: () -> Unit
+    onClearError: () -> Unit,
+    onSetError: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
@@ -122,7 +123,7 @@ fun LoginScreen(
                 val credential = GoogleAuthProvider.getCredential(googleIdToken, null)
                 onGoogleLogin(credential)
             } catch (e: Exception) {
-                // Handle error
+                onSetError(e.localizedMessage ?: "Google Sign-In failed. Please check your internet or Google Play Services.")
             }
         }
     }

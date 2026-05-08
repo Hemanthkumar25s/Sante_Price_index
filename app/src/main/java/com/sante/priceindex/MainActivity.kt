@@ -79,10 +79,23 @@ fun SanteApp() {
     val authState by authViewModel.authState.collectAsState()
     val navController = rememberNavController()
 
+    // Single source of truth for auth navigation
     LaunchedEffect(authState.isLoggedIn) {
-        if (!authState.isLoggedIn) {
-            navController.navigate("login") {
-                popUpTo(0) { inclusive = true }
+        if (authState.isLoggedIn) {
+            // If logged in, ensure we are not on login/splash
+            if (navController.currentDestination?.route == "login" || 
+                navController.currentDestination?.route == Screen.Splash.route) {
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(0) { inclusive = true }
+                }
+            }
+        } else {
+            // If logged out, ensure we are not already on login/splash
+            if (navController.currentDestination?.route != "login" && 
+                navController.currentDestination?.route != Screen.Splash.route) {
+                navController.navigate("login") {
+                    popUpTo(0) { inclusive = true }
+                }
             }
         }
     }
@@ -93,14 +106,10 @@ fun SanteApp() {
     ) {
         composable(Screen.Splash.route) {
             SplashScreen(onNavigateToHome = {
-                if (authState.isLoggedIn) {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Splash.route) { inclusive = true }
-                    }
-                } else {
-                    navController.navigate("login") {
-                        popUpTo(Screen.Splash.route) { inclusive = true }
-                    }
+                // Initial navigation from splash
+                val startRoute = if (authState.isLoggedIn) Screen.Home.route else "login"
+                navController.navigate(startRoute) {
+                    popUpTo(Screen.Splash.route) { inclusive = true }
                 }
             })
         }
@@ -114,15 +123,9 @@ fun SanteApp() {
                 onGoogleLogin = { credential ->
                     authViewModel.loginWithGoogle(credential)
                 },
-                onClearError = authViewModel::clearError
+                onClearError = authViewModel::clearError,
+                onSetError = authViewModel::setError
             )
-            if (authState.isLoggedIn) {
-                LaunchedEffect(Unit) {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo("login") { inclusive = true }
-                    }
-                }
-            }
         }
 
         composable(Screen.Home.route) {
@@ -136,67 +139,73 @@ fun MainScaffold() {
     val mainViewModel: MainViewModel = viewModel()
     val uiState by mainViewModel.uiState.collectAsState()
     val authViewModel: AuthViewModel = viewModel()
+    val authState by authViewModel.authState.collectAsState()
     
     val bottomNavController = rememberNavController()
 
     val aiRepository = remember { AiRepository(apiKey = "YOUR_API_KEY_HERE") }
     val aiViewModel: AiViewModel = viewModel(factory = AiViewModelFactory(aiRepository))
 
+    // Pre-load data in background
     LaunchedEffect(Unit) {
         mainViewModel.ensurePricesLoaded()
     }
 
     Scaffold(
         bottomBar = {
-            NavigationBar(
-                containerColor = Color.White,
-                contentColor = MaterialTheme.colorScheme.primary
-            ) {
-                val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
-                val currentDest = navBackStackEntry?.destination
+            if (authState.isLoggedIn) {
+                NavigationBar(
+                    containerColor = Color.White,
+                    contentColor = MaterialTheme.colorScheme.primary
+                ) {
+                    val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
+                    val currentDest = navBackStackEntry?.destination
 
-                navItems.forEach { item ->
-                    val selected = currentDest?.hierarchy?.any { it.route == item.screen.route } == true
-                    NavigationBarItem(
-                        icon = { Icon(item.icon, item.label) },
-                        label = {
-                            Text(
-                                item.label,
-                                fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
-                            )
-                        },
-                        selected = selected,
-                        onClick = {
-                            bottomNavController.navigate(item.screen.route) {
-                                popUpTo(bottomNavController.graph.findStartDestination().id) {
-                                    saveState = true
+                    navItems.forEach { item ->
+                        val selected = currentDest?.hierarchy?.any { it.route == item.screen.route } == true
+                        NavigationBarItem(
+                            icon = { Icon(item.icon, item.label) },
+                            label = {
+                                Text(
+                                    item.label,
+                                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
+                                )
+                            },
+                            selected = selected,
+                            onClick = {
+                                if (bottomNavController.currentDestination?.route != item.screen.route) {
+                                    bottomNavController.navigate(item.screen.route) {
+                                        popUpTo(bottomNavController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
                                 }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
+                            },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                                unselectedIconColor = Color.Gray,
+                                unselectedTextColor = Color.Gray
+                            )
+                        )
+                    }
+
+                    NavigationBarItem(
+                        icon = { Icon(Icons.Default.Logout, "Logout") },
+                        label = { Text("Logout") },
+                        selected = false,
+                        onClick = {
+                            authViewModel.logout()
                         },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = MaterialTheme.colorScheme.primary,
-                            selectedTextColor = MaterialTheme.colorScheme.primary,
-                            indicatorColor = MaterialTheme.colorScheme.primaryContainer,
-                            unselectedIconColor = Color.Gray,
-                            unselectedTextColor = Color.Gray
+                            unselectedIconColor = Color(0xFFB71C1C),
+                            unselectedTextColor = Color(0xFFB71C1C)
                         )
                     )
                 }
-
-                NavigationBarItem(
-                    icon = { Icon(Icons.Default.Logout, "Logout") },
-                    label = { Text("Logout") },
-                    selected = false,
-                    onClick = {
-                        authViewModel.logout()
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        unselectedIconColor = Color(0xFFB71C1C),
-                        unselectedTextColor = Color(0xFFB71C1C)
-                    )
-                )
             }
         }
     ) { innerPadding ->

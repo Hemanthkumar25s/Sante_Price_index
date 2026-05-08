@@ -91,4 +91,8 @@ class AuthViewModel : ViewModel() {
     fun clearError() {
         _authState.value = _authState.value.copy(error = null)
     }
+
+    fun setError(message: String) {
+        _authState.value = _authState.value.copy(error = message, isLoading = false)
+    }
 }

@@ -106,7 +106,7 @@ class MainViewModel : ViewModel() {
                 fallingCount = fallbackPrices.count { it.getTrend() == Trend.FALLING }
             )
             try {
-                val prices = withTimeout(4_500) {
+                val prices = withTimeout(2_500) {
                     FirebaseRepository.getPrices().first()
                 }.ifEmpty { fallbackPrices }
                 _uiState.value = _uiState.value.copy(

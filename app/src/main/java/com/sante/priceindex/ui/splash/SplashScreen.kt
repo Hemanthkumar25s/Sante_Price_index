@@ -16,7 +16,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun SplashScreen(onNavigateToHome: () -> Unit) {
     LaunchedEffect(Unit) {
-        delay(2000) // Simulate a light splash
+        delay(800) // Reduced from 2000ms for faster startup
         onNavigateToHome()
     }
 
