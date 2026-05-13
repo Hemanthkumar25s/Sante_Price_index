@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -75,14 +76,15 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun SanteApp() {
-    val authViewModel: AuthViewModel = viewModel()
+    val context = LocalContext.current
+    val authViewModel: AuthViewModel = viewModel(context as ComponentActivity)
     val authState by authViewModel.authState.collectAsState()
     val navController = rememberNavController()
 
     // Single source of truth for auth navigation
     LaunchedEffect(authState.isLoggedIn) {
         if (authState.isLoggedIn) {
-            // If logged in, ensure we are not on login/splash
+            // Redirect to Home if on Login or Splash
             if (navController.currentDestination?.route == "login" || 
                 navController.currentDestination?.route == Screen.Splash.route) {
                 navController.navigate(Screen.Home.route) {
@@ -90,7 +92,7 @@ fun SanteApp() {
                 }
             }
         } else {
-            // If logged out, ensure we are not already on login/splash
+            // Redirect to Login if anywhere else
             if (navController.currentDestination?.route != "login" && 
                 navController.currentDestination?.route != Screen.Splash.route) {
                 navController.navigate("login") {
@@ -106,7 +108,6 @@ fun SanteApp() {
     ) {
         composable(Screen.Splash.route) {
             SplashScreen(onNavigateToHome = {
-                // Initial navigation from splash
                 val startRoute = if (authState.isLoggedIn) Screen.Home.route else "login"
                 navController.navigate(startRoute) {
                     popUpTo(Screen.Splash.route) { inclusive = true }
@@ -136,9 +137,10 @@ fun SanteApp() {
 
 @Composable
 fun MainScaffold() {
+    val context = LocalContext.current
     val mainViewModel: MainViewModel = viewModel()
     val uiState by mainViewModel.uiState.collectAsState()
-    val authViewModel: AuthViewModel = viewModel()
+    val authViewModel: AuthViewModel = viewModel(context as ComponentActivity)
     val authState by authViewModel.authState.collectAsState()
     
     val bottomNavController = rememberNavController()

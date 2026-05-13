@@ -102,28 +102,32 @@ fun LoginScreen(
     val canSubmit = email.isNotBlank() && password.isNotBlank() && !authState.isLoading
 
     val handleGoogleSignIn = {
-        val googleIdOption = GetGoogleIdOption.Builder()
-            .setFilterByAuthorizedAccounts(false)
-            .setServerClientId(webClientId)
-            .setAutoSelectEnabled(false)
-            .build()
+        if (webClientId.contains("YOUR_WEB_CLIENT_ID")) {
+            onSetError("Google Sign-In is not configured yet. Please update the Web Client ID in strings.xml.")
+        } else {
+            val googleIdOption = GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(false)
+                .setServerClientId(webClientId)
+                .setAutoSelectEnabled(false)
+                .build()
 
-        val request = GetCredentialRequest.Builder()
-            .addCredentialOption(googleIdOption)
-            .build()
+            val request = GetCredentialRequest.Builder()
+                .addCredentialOption(googleIdOption)
+                .build()
 
-        scope.launch {
-            try {
-                val result = credentialManager.getCredential(
-                    request = request,
-                    context = context
-                )
-                val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(result.credential.data)
-                val googleIdToken = googleIdTokenCredential.idToken
-                val credential = GoogleAuthProvider.getCredential(googleIdToken, null)
-                onGoogleLogin(credential)
-            } catch (e: Exception) {
-                onSetError(e.localizedMessage ?: "Google Sign-In failed. Please check your internet or Google Play Services.")
+            scope.launch {
+                try {
+                    val result = credentialManager.getCredential(
+                        request = request,
+                        context = context
+                    )
+                    val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(result.credential.data)
+                    val googleIdToken = googleIdTokenCredential.idToken
+                    val credential = GoogleAuthProvider.getCredential(googleIdToken, null)
+                    onGoogleLogin(credential)
+                } catch (e: Exception) {
+                    onSetError(e.localizedMessage ?: "Google Sign-In failed. Please check your internet or Google Play Services.")
+                }
             }
         }
     }
@@ -337,10 +341,11 @@ fun LoginScreen(
                     }
 
                     androidx.compose.material3.OutlinedButton(
-                        onClick = { handleGoogleSignIn() },
+                        onClick = { if (!authState.isLoading) handleGoogleSignIn() },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(54.dp),
+                        enabled = !authState.isLoading,
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.outlinedButtonColors(
                             contentColor = LoginInk
@@ -348,7 +353,11 @@ fun LoginScreen(
                         border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFD8E4DA))
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            GoogleIcon()
+                            if (authState.isLoading && !canSubmit) { // canSubmit is true for email/pass
+                                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                            } else {
+                                GoogleIcon()
+                            }
                             Spacer(Modifier.width(12.dp))
                             Text(
                                 text = "Sign in with Google",
